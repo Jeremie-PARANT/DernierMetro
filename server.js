@@ -1,6 +1,15 @@
 const express = require("express");
+const { Pool } = require('pg');
 const app = express();
 const port = 3000;
+
+const db = new Pool({
+    host: 'db',
+    port: 5432,
+    user: 'user',
+    password: 'pass',
+    database: 'myapp'
+});
 
 // Middleware logs
 app.use((req, res, next) => {
@@ -31,6 +40,12 @@ app.get('/next-metro', (req, res) => {
         isLast: result.isLast,
         headwayMin: result.headwayMin,
         tz: result.tz
+    });
+});
+
+app.get('/now', (req, res) => {
+    db.query('SELECT NOW()').then(result => {
+        res.json(result.rows[0]);
     });
 });
 
