@@ -39,6 +39,7 @@ app.get('/next-metro', (req, res) => {
     const result = nextArrival();
     res.json({
         station,
+        line: 'M1',
         nextArrival: result.nextArrival,
         isLast: result.isLast,
         headwayMin: result.headwayMin,
@@ -46,7 +47,7 @@ app.get('/next-metro', (req, res) => {
     });
 });
 
-app.get('/now', (req, res) => {
+app.get('/test-db', (req, res) => {
     dbPool.query('SELECT NOW()').then(result => {
         res.json(result.rows[0]);
     });
