@@ -1,15 +1,18 @@
 const express = require("express");
 const { Pool } = require('pg');
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-const db = new Pool({
-    host: 'db',
-    port: 5432,
-    user: 'user',
-    password: 'pass',
-    database: 'myapp'
+const dbPool = new Pool({
+    user: process.env.PGUSER || "user",
+    password: process.env.PGPASSWORD || "pass",
+    database: process.env.PGDATABASE || "dernier_metro",
+    host: process.env.PGHOST || "postgres",
+    port: Number(process.env.PGPORT || 5432),
+    max: 5,
+    idleTimeoutMillis: 10000
 });
+
 
 // Middleware logs
 app.use((req, res, next) => {
@@ -44,7 +47,7 @@ app.get('/next-metro', (req, res) => {
 });
 
 app.get('/now', (req, res) => {
-    db.query('SELECT NOW()').then(result => {
+    dbPool.query('SELECT NOW()').then(result => {
         res.json(result.rows[0]);
     });
 });
@@ -66,6 +69,6 @@ app.use((req, res, next) => {
 });
 
 // Port
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
 });
