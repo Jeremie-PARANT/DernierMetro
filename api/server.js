@@ -47,10 +47,13 @@ app.get('/next-metro', (req, res) => {
     });
 });
 
-app.get('/test-db', (req, res) => {
-    dbPool.query('SELECT NOW()').then(result => {
-        res.json(result.rows[0]);
-    });
+app.get('/db-health', async (req, res) => {
+    try {
+        const result = await dbPool.query('SELECT 1 as ok');
+        return res.status(200).json({ db: 'ok', result: result.rows[0] });
+    } catch (err) {
+        return res.status(500).json({ db: 'error', error: err.message });
+    }
 });
 
 // Methodes
