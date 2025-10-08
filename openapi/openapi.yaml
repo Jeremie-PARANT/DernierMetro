@@ -35,6 +35,15 @@ paths:
                     type: string
                   result:
                     type: string
+        '500':
+          description: Erreur BDD
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
   /next-metro:
     get:
       summary: Prochain passage de métro
@@ -104,6 +113,15 @@ paths:
                     type: string
         '404':
           description: Station introuvable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Erreur BDD
           content:
             application/json:
               schema:
