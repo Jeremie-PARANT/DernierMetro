@@ -56,3 +56,43 @@ paths:
                 properties:
                   error:
                     type: string
+  /last-metro:
+    get:
+      summary: Dernier métro
+      parameters:
+        - in: query
+          name: station
+          schema:
+            type: string
+          required: true
+          description: Nom de la station
+      responses:
+        '200':
+          description: Heure d'arrivée estimée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  station:
+                    type: string
+                  departed_at:
+                    type: string
+        '400':
+          description: Paramètre manquant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Station introuvable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string

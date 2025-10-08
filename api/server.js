@@ -1,5 +1,7 @@
 const express = require("express");
 const { Pool } = require('pg');
+var cors = require('cors')
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +15,8 @@ const dbPool = new Pool({
     idleTimeoutMillis: 10000
 });
 
+// Middleware Cors
+app.use(cors())
 
 // Middleware logs
 app.use((req, res, next) => {
@@ -53,6 +57,32 @@ app.get('/db-health', async (req, res) => {
         return res.status(200).json({ db: 'ok', result: result.rows[0] });
     } catch (err) {
         return res.status(500).json({ db: 'error', error: err.message });
+    }
+});
+
+app.get('/last-metro', async (req, res) => {
+    const station = (req.query.station || '').toString().trim();
+    if (!station) {
+        return res.status(400).json({ error: "missing station" });
+    }
+
+    try {
+        const result = await dbPool.query(
+            'SELECT s.name, l.departed_at FROM stations s JOIN last_metro l ON s.id=l.station_id WHERE s.name=$1',
+            [station]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "station not found" });
+        }
+
+        return res.status(200).json({
+            station: result.rows[0].name,
+            departed_at: result.rows[0].departed_at
+        });
+    } catch (err) {
+        console.error('DB error:', err);
+        return res.status(500).json({ error: "database error" });
     }
 });
 
