@@ -20,6 +20,21 @@ paths:
                     type: string
                   service:
                     type: string
+  /db-health:
+    get:
+      summary: Database Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  db:
+                    type: string
+                  result:
+                    type: string
   /next-metro:
     get:
       summary: Prochain passage de métro
